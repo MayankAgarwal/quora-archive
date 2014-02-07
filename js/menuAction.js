@@ -1,6 +1,6 @@
 /* SCRIPT CALLED ON index.html AND HANDLES ALL THE MENU RELATED ACTIONS ON THE PAGE */
 
-var storage = chrome.storage.local;
+var storage = chrome.storage.sync;
 var user, profile_link;
 
 loggedUser();
