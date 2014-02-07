@@ -1,4 +1,4 @@
-var storage = chrome.storage.local;
+var storage = chrome.storage.sync;
 
 // checks every 2 seconds if the Quora API has retured the name of the user
 
