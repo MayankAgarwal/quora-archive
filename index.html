@@ -13,6 +13,9 @@
       
     <link rel="shortcut icon" href="icon/favicon.ico" />
     
+    <script src="js/bootstrap-select.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="css/bootstrap-select.css" />
+    
     <title>Quora Archive</title>
   </head>
   <body>
@@ -22,7 +25,7 @@
   
     <div id="classifyAnswerOptions">
         <span style="margin-right: 15px;"><strong>Select bucket</strong></span>
-        <select id="answerBucketDD" style="font-size: 12px;"></select>
+        <select id="answerBucketDD" style="font-size: 12px;" multiple data-live-search="true"></select>
         <button id="classifyAnswers" class="btn btn-small btn-success" type="button" style="margin-left: 30px;">Classify</button>
         <button id="closeClassifyDD" class="btn btn-small" type="button" style="margin-left: 20px;">Close</button>
     </div>
@@ -168,8 +171,6 @@
     		<span id="button-container"></span>
     	</div>
     </div>
-    
-  
   </body>
 
 	<script src="js/jquery.clippy.min.js" type="text/javascript"></script>
@@ -178,5 +179,4 @@
 	<script src="js/menuAction.js" type="text/javascript"></script>
     <script src="js/FileSaver.js" type="text/javascript"></script>
 	
-  
 </html>

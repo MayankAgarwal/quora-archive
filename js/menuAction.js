@@ -507,7 +507,7 @@ $('#classifyAnswers').bind('click', function() {
 
 	// bucket selected in the dropdown
 	var bucket = $('#answerBucketDD').val();
-
+    
 	storage.get(user, function(items) {
 		var userLinks = items[user];
 

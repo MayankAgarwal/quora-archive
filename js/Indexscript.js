@@ -40,7 +40,7 @@ function checkUserLoggedIn(){
 		storage.get(data_key, function(items) {
 			var data_version = items[data_key];
 
-			if (typeof data_version == 'undefined' || data_version["data_version"] != "v2") {
+			if (typeof data_version == 'undefined' || data_version["data_version"] != "v2.2") {
 				migrateArchiveData(user);
 				return -1;
 			}
@@ -50,7 +50,8 @@ function checkUserLoggedIn(){
 
 
 		populateBuckets();
-		populateClassifyAnswersMenu();
+        //Commented By Rumit, as sometimes it was getting called before populateBuckets async call completes, resulting into blank classify ddl.
+		//populateClassifyAnswersMenu();
 		populateArchiveStatus();		// populates the archive status div.
 		populateUserInformation();
 		
@@ -83,7 +84,7 @@ function populateBuckets() {
   		if (typeof buckets == 'undefined')		// no buckets.
   			return ;
 
-  		buckets = buckets.split(";");
+  		//buckets = buckets.split(";");
   		global_buckets = buckets;
   		populateClassifyAnswersMenu();
 
@@ -125,7 +126,8 @@ function populateClassifyAnswersMenu () {
 
 		$('#answerBucketDD').append(temp_html);
 	}
-
+    console.log(global_buckets);
+    $("#answerBucketDD").selectpicker();
 }
 
 
@@ -259,9 +261,24 @@ function contentPopulate(bucket) {
   				tempAnswerBucket = userLinks[tempAnswerLink]["bucket"];
 
   				// skips answers that do not match the specified bucket 
-  				if (bucket.toLowerCase() != "all" && tempAnswerBucket.toLowerCase() != bucket.toLowerCase())
-  					continue;
-  				
+  				if (bucket.toLowerCase() != "all") {//&& tempAnswerBucket.toLowerCase() != bucket.toLowerCase())
+                    var found = false;
+                    
+                    if(bucket == '') {
+                        found = (tempAnswerBucket.length == 0);
+                    }
+                    
+                    for(var b in tempAnswerBucket){
+                        if(tempAnswerBucket[b].toLowerCase() == bucket.toLowerCase()){
+                            found = true;
+                            break;
+                        }
+                    }
+                    if(!found) {
+                        continue;
+                    }
+                }
+                
   				if (tempAnswerLink.match(/(http|https):\/\/[\w\-+]+\.quora\.com\/[\w\-+]+/i) != null || tempAnswerLink.indexOf('answer') == -1)		// if the link is that of a post
   					displayBlogLink(tempAnswerLink);
   				else

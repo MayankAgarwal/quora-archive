@@ -23,12 +23,15 @@ function migrateArchiveData (user) {
 
 		console.log("MIGRATING DATA");
 
-		convertDataToDict(data);
+        if(typeof(data) == 'string') {
+            convertDataToDict(data);
+        }
+        else {
+            convertDataToV2_2(data);
+        }
 	})
 
 }
-
-
 
 // converts csv data to dictionary
 function convertDataToDict(data) {
@@ -80,8 +83,9 @@ function convertDataToDict(data) {
 
 				// set the system setting parameter to 				
 				storage.set(system_setting, function() {
-					alert('Data migration successful');
-					location.reload();
+					//alert('Data migration successful');
+					//location.reload();
+                    convertBucketToDict(data);
 				})
 
 			})
@@ -93,4 +97,49 @@ function convertDataToDict(data) {
 		console.log('Error while converting data to new format.');
 		console.log("Error message: "+err.message)
 	}
+}
+
+// Converts data to v2.2
+function convertDataToV2_2(data) {
+    var userSetting_label = user + ":Setting";
+            
+    storage.get(userSetting_label, function(items) {
+        if (items[userSetting_label]['data_version'] == 'v2') {
+            convertBucketToDict(data);
+        }
+    });
+}
+
+// Converts Bucket (which was stored previously as csv) to array of strings.
+function convertBucketToDict(data) {
+    for (var link in data) {
+        var buckets = data[link]["bucket"];
+        buckets = buckets.split(';');
+        
+        data[link]['buckets'] = [];
+        
+        for (var b in buckets) {
+            if(buckets[b] != '') {
+                data[link]['buckets'].push(buckets[b]);
+            }
+        }
+    }
+    
+    // set the userSetting field to data_version: v2.2 This indicates that the data has already been migrated and no need to call the migrateData routine.
+    var userSetting_label = user + ":Setting";
+        
+    storage.get(userSetting_label, function(system_settings) {
+        system_settings[userSetting_label]['data_version'] = 'v2.2';
+        
+        // set the new dictionary data
+        storage.set(data, function() {
+
+            // set the system setting parameter to 				
+            storage.set(system_settings, function() {
+                alert('Data migration successful');
+                location.reload();
+            })
+
+        })
+    });
 }

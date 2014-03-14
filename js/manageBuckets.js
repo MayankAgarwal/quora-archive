@@ -23,8 +23,8 @@ function displayExistingBuckets() {
   		if (typeof buckets == 'undefined' || buckets == '')
   			return ;
 
-  		//buckets are stored in csv format
-  		buckets = buckets.split(";");
+  		//buckets are stored in csv format [Old Version]
+  		//buckets = buckets.split(";");
 
   		for (var i=0;i <buckets.length; i++) {
 
@@ -93,18 +93,23 @@ function addBucket(bucket) {
 
   		buckets = items[bucketsLabel];
   	
-  		if (typeof buckets != 'undefined' && (buckets.toString().toLowerCase()).indexOf(bucket.toLowerCase()) != -1) {		// checks if the bucket is already present in the archive. Hence, first check if there are contents in the archive. If true, then check for the bucket.
-  			$('div#error-alert-div').html('Bucket already exists.');
-  			$('div#error-alert-div').slideDown(300).delay(1500).slideUp(300);
-  			return;
+  		if (typeof buckets != 'undefined') {
+            //if (buckets.toString().toLowerCase()).indexOf(bucket.toLowerCase()) != -1) {		// checks if the bucket is already present in the archive. Hence, first check if there are contents in the archive. If true, then check for the bucket.
+            for (var b in buckets) {
+                if(buckets[b].toLowerCase() == bucket.toLowerCase()) {
+                    $('div#error-alert-div').html('Bucket already exists.');
+                    $('div#error-alert-div').slideDown(300).delay(1500).slideUp(300);
+                    return;
+                }
+            }
   		}
 
   		if (typeof buckets == 'undefined') {		// i.e. the storage area is empty. Hence, no need to append. Initialize the variable with the current bucket.
-  			buckets = bucket;
+            buckets = [];
   		}
-  		else {
-  			buckets = buckets + ';' + bucket;		// semicolon separated values. appends bucket to the existing archive.
-  		}
+  		
+        buckets.push(bucket);
+  		
   	
   		var bucketsDict = {};		// temporary variable created to be able to use chrome local storage
   		bucketsDict[bucketsLabel] = buckets;
@@ -199,16 +204,34 @@ function delete_bucket(bucket, newBucket, callback) {
 			var buckets = buckets_item[bucket_label];
 			
 			// removing the bucket from the storage
-			buckets = buckets.replace(bucket, '');
-			buckets = buckets.replace(/;;/g, ';');
+			//buckets = buckets.replace(bucket, '');
+			//buckets = buckets.replace(/;;/g, ';');
+            
+            var index = buckets.indexOf(bucket);
+            if (index > -1) {
+                buckets.splice(index, 1);
+            }
 
 			// tagging answers tagged to old bucket to new bucket
 			for (var i in userLinks) {
 
 				var temp_answer_bucket = userLinks[i]["bucket"];
 
-				if(temp_answer_bucket == bucket)
-					userLinks[i]["bucket"] = newBucket;
+                for (var b in temp_answer_bucket) {
+                    if(temp_answer_bucket[b] == bucket) {
+                        var ansbuckets = userLinks[i]["bucket"];
+                        var i = ansbuckets.indexOf(bucket);
+
+                        if (i > -1) {
+                            if(newBucket == '') {
+                                ansbuckets.splice(i, 1);
+                            }
+                            else {
+                                ansbuckets[b] = newBucket;
+                            }
+                        }
+                    }
+                }
 
 			}
 
