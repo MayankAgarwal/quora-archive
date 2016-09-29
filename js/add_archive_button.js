@@ -1,7 +1,7 @@
 ﻿// gets the current logged in user name from Quora API
 var user = loggedUser();
 
-var storage = chrome.storage.local;
+var storage = chrome.storage.sync;
 
 // injecting Archive link on the Quora navigation bar
 
