@@ -144,7 +144,7 @@ function addLink(element, link) {
   		}
 
   		
-  		userLinks[link] = {"bucket": ""};		// add a new entry to existing links. Key= link, Value: Bucket
+  		userLinks[link] = {"bucket": []};		// add a new entry to existing links. Key= link, Value: Bucket
   		
 
   		var userDict = {};		// temporary variable created to be able to use chrome local storage
@@ -176,7 +176,7 @@ function loggedUser()
 	  cache: false,
 	  dataType: "text",
 	  success: function(html)
-		  {
+		{
 	   		try
 			{
 				var result = JSON.parse(html.match(/{.*}/));
@@ -186,7 +186,7 @@ function loggedUser()
 			{
 				console.log(ex);
 			}
-			},
+        },
 	 error: function(jqXHR, textStatus, errorThrown)
 	 	{
 	 		console.log(errorThrown)
